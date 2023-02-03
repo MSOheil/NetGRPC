@@ -25,5 +25,24 @@ var clientReuqest = new CustomerLookUpModel
 
 var reply = await customerClient.GetCustomerInfoAsync(clientReuqest);
 
+
 Console.WriteLine("Response from server is " + reply.FirstName + "last name is " + reply.LastName);
+
+Console.WriteLine();
+Console.WriteLine("New Customer list");
+Console.WriteLine();
+
+
+using (var call = customerClient.GetNewCustomers(new NewCustomerRequest()))
+{
+    while (await call.ResponseStream.MoveNext(cancellationToken: default))
+    {
+        var currentCustomer = call.ResponseStream.Current;
+        Console.WriteLine(currentCustomer.FirstName + "last naem is " + currentCustomer.LastName + "Email is "
+            + currentCustomer.EmailAddress + " Age is " + currentCustomer.Age);
+    }
+}
+
+
+
 Console.ReadLine();
